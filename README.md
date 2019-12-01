@@ -111,3 +111,22 @@ The division rounds down, which is intended as we need to remove the second oper
 Note that this doesn't hold only in one edge case, which is when there are zero disjunctions in the expression. In this case the one conjuction in the expression is not inherently negated, and we therefore need to handle this case separatelly. It reduces exactly to the problem in the previous section.
 
 Again, we memoize the recursion and add a backtracking table for reconstructing the solution, and the problem is solved. The second part uses the first one only in the base case, and there is no additional computation since the lookup of the first table is O(1). Since the algorithm is nearly the same, the asymptotic complexity of the second part is the same as the first one O(n^3) time and O(n^2) space.
+
+# Logic Diagrams
+
+We will now attempt to solve the same problem, but applied to circuit diagrams rather than expressions. The advantage of this is the fact we can reuse already calculated values. For example, in case of negation A' always requires only one aditional NAND. We simply connect the two ports of the NAND together and then to the logic input. We know that:
+
+AB = (AB)'' = (A nand B)' = (A nand B) nand (A nand B) \
+AvB = (AvB)'' = (A'B')' = A' nand B' 
+
+Considering that, in the former case, (A nand B) is negated, we need only two additional NANDs to achieve AB if we've already calculaed A and B. In the latter case, if we've calculated A and B individually we can obtain AvB in 3 additional operations(2 negations = 2 NANDs and one additional NAND). We can now write the recurence relations. For the first layer we can write:
+
+F_kon(i,j)|k = F_kon(i,k) + F_kon(k+1,j) + 2\
+F_kon(i,i) = 0 if i-th operand isn't negated\
+F_kon(i,i) = 1 if i_th operand is negated
+
+For the second layer we can write:
+
+F_dis(i,j)|k = F_dis(i,k) + F_dis(k+1,j) + 3
+F_dis(i,j)
+
